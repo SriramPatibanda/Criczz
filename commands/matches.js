@@ -19,9 +19,12 @@ module.exports = {
                 res.on('end', function() {
                     const matchesData = JSON.parse(data);
                     const list = matchesData.matches;
-                    for (let i = 0; i < list.length; i++) {
-                        const fixture = `${i+1}. ` + list[i]['team-1'] + ' vs ' + list[0]['team-2'];
-                        console.log(fixture);
+                    const list1 = list.filter(function(el) {
+                        return el.matchStarted == true
+                    })
+                    for (let i = 0; i < list1.length; i++) {
+                        const fixture = `${i+1}. ` + list1[i]['team-1'] + ' vs ' + list1[i]['team-2'];
+                        message.channel.send(fixture);
                     }
                 });
 
