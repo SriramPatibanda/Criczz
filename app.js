@@ -1,10 +1,12 @@
+const fs = require('fs');
 const Discord = require('discord.js');
 const { prefix, token, apiKey } = require('./config.json');
 const client = new Discord.Client();
 const https = require('https');
 const querystring = require('querystring');
+client.commands = new Discord.Collection();
 
-
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
 client.once('ready', () => {
     console.log('Ready!');
@@ -16,58 +18,22 @@ client.on('message', async message => {
     const args = message.content.slice(prefix.length).trim().split(/ +/);
     const command = args.shift().toLowerCase();
 
-    if (command === 'matches') {
-        // if (!args.length) {
-        //     return message.channel.send('You need to supply a search term!');
-        // }
-
-        try {
-            https.get(`https://cricapi.com/api/matches?apikey=${apiKey}`, function(res) {
-
-
-                var data;
-                res.on("data", function(chunk) {
-                        if (!data) {
-                            data = chunk;
-                        } else {
-                            data += chunk;
-                        }
-                    }
-
-
-
-                );
-
-                res.on('end', function() {
-                    const matchesData = JSON.parse(data);
-                    const list = matchesData.matches;
-                    for (let i = 0; i < list.length; i++) {
-                        const fixture = `${i+1}. ` + list[i]['team-1'] + ' vs ' + list[0]['team-2'];
-                        console.log(fixture);
-                    }
-                });
-
-            });
-            // if (!list.length) {
-            //     return message.channel.send(`No results found for **${args.join(' ')}**.`);
-            // }
-
-
-
-
-        } catch (error) {
-            console.log(error);
-        }
-
-
-
-
-
+    for (const file of commandFiles) {
+        const command = require(`./commands/${file}`);
+        client.commands.set(command.name, command);
     }
 
-
-
-
+    if (command === 'matches') {
+        client.commands.get('matches').execute(message, args);
+    }
 });
 
 client.login(token);
+
+// if (!args.length) {
+//     return message.channel.send('You need to supply a search term!');
+// }
+
+// if (!list.length) {
+//     return message.channel.send(`No results found for **${args.join(' ')}**.`);
+// }
