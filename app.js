@@ -3,7 +3,7 @@ const { prefix, token, apiKey } = require('./config.json');
 const client = new Discord.Client();
 const https = require('https');
 const querystring = require('querystring');
-const { get } = require('http');
+
 
 
 client.once('ready', () => {
@@ -23,17 +23,28 @@ client.on('message', async message => {
 
         try {
             https.get(`https://cricapi.com/api/matches?apikey=${apiKey}`, function(res) {
-                res.on('data', function(data) {
+
+
+                var data;
+                res.on("data", function(chunk) {
+                        if (!data) {
+                            data = chunk;
+                        } else {
+                            data += chunk;
+                        }
+                    }
+
+
+
+                );
+
+                res.on('end', function() {
                     const matchesData = JSON.parse(data);
-                    console.log(matchesData);
-
-                    // list.forEach(match => {
-                    //     const fixture = `${match.team1} vs ${match.team2}`
-                    //     console.log(fixture);
-                    // });
-
-
-
+                    const list = matchesData.matches;
+                    for (let i = 0; i < list.length; i++) {
+                        const fixture = `${i+1}. ` + list[i]['team-1'] + ' vs ' + list[0]['team-2'];
+                        console.log(fixture);
+                    }
                 });
 
             });
