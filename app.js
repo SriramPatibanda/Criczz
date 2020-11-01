@@ -26,6 +26,10 @@ client.on('message', async message => {
     if (command === 'matches') {
         client.commands.get('matches').execute(message, args);
     }
+
+    if (command === 'score') {
+        client.commands.get('score').execute(message, args);
+    }
 });
 
 client.login(token);

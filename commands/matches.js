@@ -7,7 +7,6 @@ module.exports = {
     name: 'matches',
     execute(message, args) {
         var uniqueId = 1;
-        var fixtureList = new Array();
         try {
             https.get(`${url}/matches?apikey=${apiKey}`, function(res) {
 
@@ -27,21 +26,20 @@ module.exports = {
                     for (let i = 0; i < list.length; i++) {
                         if (list[i].matchStarted === true) {
                             const fixture = `${i+1}. ` + list[i]['team-1'] + ' vs ' + list[i]['team-2'];
-                            fixtureList.push(fixture);
+                            const Id = list[i].unique_id;
+                            message.channel.send(fixture);
+                            message.channel.send(Id);
+
                             // message.channel.send(fixture);
-                            if ((args[0] - 1) === i) {
-                                const Id = list[i].unique_id;
-                                uniqueId = Id;
-                            }
+                            // if ((args[0] - 1) === i) {
+                            //     const Id = list[i].unique_id;
+                            //     uniqueId = Id;
+                            // }
                         }
                     }
                 });
 
             });
-
-
-
-            console.log(fixtureList);
 
             //     for (let i = 0; i < list.length; i++) {
             //         if (list[i].matchStarted === true) {
