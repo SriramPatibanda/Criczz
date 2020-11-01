@@ -1,11 +1,15 @@
 const https = require('https');
-const { prefix, token, apiKey } = require('../config.json');
+const { apiKey, url } = require('../config.json');
+
+
 
 module.exports = {
     name: 'matches',
     execute(message, args) {
+        var uniqueId = 1;
+        var fixtureList = new Array();
         try {
-            https.get(`https://cricapi.com/api/matches?apikey=${apiKey}`, function(res) {
+            https.get(`${url}/matches?apikey=${apiKey}`, function(res) {
 
                 var data;
                 res.on("data", function(chunk) {
@@ -19,16 +23,35 @@ module.exports = {
                 res.on('end', function() {
                     const matchesData = JSON.parse(data);
                     const list = matchesData.matches;
-                    const list1 = list.filter(function(el) {
-                        return el.matchStarted == true
-                    })
-                    for (let i = 0; i < list1.length; i++) {
-                        const fixture = `${i+1}. ` + list1[i]['team-1'] + ' vs ' + list1[i]['team-2'];
-                        message.channel.send(fixture);
+
+                    for (let i = 0; i < list.length; i++) {
+                        if (list[i].matchStarted === true) {
+                            const fixture = `${i+1}. ` + list[i]['team-1'] + ' vs ' + list[i]['team-2'];
+                            fixtureList.push(fixture);
+                            // message.channel.send(fixture);
+                            if ((args[0] - 1) === i) {
+                                const Id = list[i].unique_id;
+                                uniqueId = Id;
+                            }
+                        }
                     }
                 });
 
             });
+
+
+
+            console.log(fixtureList);
+
+            //     for (let i = 0; i < list.length; i++) {
+            //         if (list[i].matchStarted === true) {
+            //             if ((args[0] - 1) === i) {
+            //                 const uniqueId = list[i].unique_id;
+            //                 console.log(uniqueId);
+            //             }
+
+            //         }
+            //     }
 
 
         } catch (error) {
