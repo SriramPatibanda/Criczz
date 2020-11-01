@@ -1,5 +1,5 @@
 const https = require('https');
-const { apiKey, url } = require('../config.json');
+const { apiKey, url } = require('../config');
 
 
 

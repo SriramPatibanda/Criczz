@@ -1,12 +1,9 @@
 const https = require('https');
-const { apiKey, url } = require('../config.json');
-
-
+const { url, apiKey } = require('../config');
 
 module.exports = {
     name: 'matches',
     execute(message, args) {
-        var uniqueId = 1;
         try {
             https.get(`${url}/matches?apikey=${apiKey}`, function(res) {
 

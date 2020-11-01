@@ -1,9 +1,7 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const { prefix, token, apiKey } = require('./config.json');
+const { prefix, apiKey, token } = require('./config');
 const client = new Discord.Client();
-const https = require('https');
-const querystring = require('querystring');
 client.commands = new Discord.Collection();
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
@@ -33,6 +31,8 @@ client.on('message', async message => {
 });
 
 client.login(token);
+
+
 
 // if (!args.length) {
 //     return message.channel.send('You need to supply a search term!');
