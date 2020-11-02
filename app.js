@@ -28,6 +28,10 @@ client.on('message', async message => {
     if (command === 'score') {
         client.commands.get('score').execute(message, args);
     }
+
+    if (command === 'help') {
+        client.commands.get('help').execute(message, args);
+    }
 });
 
 client.login(token);
